@@ -1,25 +1,30 @@
-BE Project Final Report Template In Latex
-================================
+# Simulation of Infectious Processes on Networks
 
-Author : Mayank Jain
+## Overview
+This repository contains the LaTeX source code for my Bachelor's thesis, which focuses on the simulation of infectious processes (SIR, SIS, SIRS) on networks, graphs and grids, along with determining the source of the infection. The project aims to provide insights into how infections spread through networks and grids and how source detection techniques can be optimized.
 
-Blog : [My Blog](http://firesofmay.blogspot.in/)
+The LaTeX template used for this report is based on a template originally created by [firesofmay](https://github.com/firesofmay), available at:
+https://github.com/firesofmay/BE-Project-Final-Report-Latex-Template.git
 
-For Details Check: [My Blog Post](http://firesofmay.blogspot.in/2012/04/final-be-project-report-template-in.html)
+## Objective
+The main objective of this thesis is to explore and develop computational models that can accurately identify the source of the infection.
 
+## Methodology
+The methodology section will detail the types of networks used, the infectious model applied, and the algorithms developed or utilized for tracing the source of the infection. This section will include:
+- Network models (e.g., random geometric graphs, grids)
+- Simulation of the infectious process
+- Source detection techniques
 
-Features :
----------------
-- Main File is report.tex
-- Header/Footer as per format
-- Cover, Certificate, Company Certificate, Abstract, Ack files ready
-- Automatic Code Formatting
-- Easy to Add/Modify
+## Installation
+Instructions on how to compile and view the thesis document from the LaTeX source files.
 
-Tested and Recommended Software (on Linux) : Kile
+### Prerequisites
+- LaTeX distribution (e.g., TeX Live, MiKTeX)
+- Any additional LaTeX packages required
 
-How to install in Ubuntu 
-
-    $ sudo apt-get install kile
-
-Enjoy!
+### Compiling the Document
+```bash
+pdflatex main.tex
+bibtex main.aux
+pdflatex main.tex
+pdflatex main.tex
