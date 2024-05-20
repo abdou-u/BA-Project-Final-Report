@@ -62,7 +62,7 @@
 % Define the default page style
 \fancypagestyle{plain}{%
   \fancyhf{} % Clear all header and footer fields
-  \fancyfoot[L]{\emph{This project is a Proof of Concept of Social Engineering Attack on Facebook using Web Scraping and Two Man in the Middle Attack Technique.}} % Left footer
+  \fancyfoot[L]{\emph{This project implements multiple source detection techniques on different networks}} % Left footer
   \fancyfoot[R]{\thepage} % Right footer
   \renewcommand{\headrulewidth}{0pt} % No header line
   \renewcommand{\footrulewidth}{0.4pt} % Footer line
@@ -75,12 +75,6 @@
 % Define the headers
 \fancyhead[L]{Chapter \thechapter} % Left header
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-
-% Define the footers
-\fancyfoot[L]{\emph{This project implements multiple source detection techniques on multiple networks and compares them.}} % Left footer
-\fancyfoot[R]{\thepage} % Right footer
-\renewcommand{\headrulewidth}{0.4pt} % Header line
-\renewcommand{\footrulewidth}{0.4pt} % Footer line
 % For the header and footer over
 
 
@@ -135,6 +129,8 @@
 \input{implementation.tex} % adds the Project Design
 \input{schedule.tex} % adds the Scheduling and Planning page
 \input{conclusion.tex} % adds the Scheduling and Planning page
+\newpage
+
 \input{ref.tex} % adds the References page
 
 \end{document}
