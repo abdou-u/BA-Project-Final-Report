@@ -1,0 +1,78 @@
+\chapter{Background}
+
+Understanding the dynamics of infectious disease spread is crucial for developing effective control strategies. This chapter provides the foundational knowledge necessary for modeling infectious diseases, focusing on one key model: \textbf{SIRS}. We will discuss the differential equations governing this model and methods to quantify the speed of infection.
+
+\section{Mathematical Modeling of Disease Spread}
+Infectious diseases can be modeled using differential equations that describe the changes in the number of susceptible (S), infected (I), and recovered (R) individuals over time.
+
+\subsection{SIRS Model}
+The SIRS model includes a return to susceptibility after recovery, accounting for waning immunity. The compartments are:
+\begin{itemize}
+    \item \textbf{Susceptible (S):} Individuals who can contract the disease.
+    \item \textbf{Infected (I):} Individuals who have contracted the disease and can transmit it.
+    \item \textbf{Recovered (R):} Individuals who have recovered from the disease but can become susceptible again.
+\end{itemize}
+\noindent
+The differential equations for the SIRS model are:
+\begin{equation}
+\frac{dS}{dt} = \delta R - \beta SI,
+\end{equation}
+\begin{equation}
+\frac{dI}{dt} = \beta SI - \gamma I,
+\end{equation}
+\begin{equation}
+\frac{dR}{dt} = \gamma I - \delta R,
+\end{equation}
+where $\delta$ is the rate at which recovered individuals become susceptible again.\\
+\noindent
+To capture the inherent randomness in disease spread, the stochastic version of the model can be represented using stochastic differential equations (SDEs). These SDEs account for random fluctuations in the infection dynamics through Wiener processes.
+
+\begin{align}
+dS &= \left(\delta R - \beta SI\right) \, dt + \sigma_S \, S \, dW_S, \\
+dI &= \left(\beta SI - \gamma I\right) \, dt + \sigma_I \, I \, dW_I, \\
+dR &= \left(\gamma I - \delta R\right) \, dt + \sigma_R \, R \, dW_R,
+\end{align}
+\noindent
+Here, \(dW_S\), \(dW_I\), and \(dW_R\) are increments of independent Wiener processes representing random fluctuations in the susceptible, infected, and recovered populations, respectively. The terms \(\sigma_S\), \(\sigma_I\), and \(\sigma_R\) denote the intensities of these fluctuations.
+
+\subsubsection*{Explanation of Terms:}
+\begin{itemize}
+    \item Wiener Processes: \(dW_S\), \(dW_I\), and \(dW_R\) are continuous-time stochastic processes with the following properties:
+    \begin{itemize}
+        \item \(E[dW_t] = 0\)
+        \item \(E[dW_t^2] = dt\)
+    \end{itemize}
+    \item Noise Intensities: The parameters \(\sigma_S\), \(\sigma_I\), and \(\sigma_R\) control the amplitude of the stochastic perturbations. Larger values indicate stronger random effects.
+\end{itemize}
+
+\section{Speed of Infection}
+Quantifying the speed of infection involves understanding how quickly the disease spreads through a population. This can be achieved using the basic reproduction number ($R_0$) and growth rate ($\lambda$), as well as a probabilistic approach using the binomial distribution.
+
+\subsection{Basic Reproduction Number ($R_0$) and Growth Rate ($\lambda$)}
+\textbf{Basic Reproduction Number ($R_0$):} $R_0$ is defined as the average number of secondary infections produced by a single infected individual in a fully susceptible population. It is given by:
+\begin{equation}
+R_0 = \frac{\beta}{\gamma}
+\end{equation}
+$R_0$ indicates whether the infection will spread ($R_0 > 1$) or die out ($R_0 \leq 1$).\\
+
+\noindent
+\textbf{Growth Rate ($\lambda$):} The growth rate $\lambda$ quantifies the rate of change of the infected population:
+\noindent
+The deterministic growth rate is given by:
+\[ \lambda_{\text{det}} = \beta S_0 - \gamma \]
+The stochastic growth rate incorporates noise intensities:
+\[ \lambda_{\text{stoch}} = \beta S_0 - \left(\gamma + \frac{\sigma^2}{2}\right) \]
+\noindent
+where \(\sigma^2\) is the combined variance of the noise terms affecting the susceptible, infected, and recovered compartments. Specifically, \(\sigma^2 = \sigma_S^2 + \sigma_I^2 + \sigma_R^2\) and $S_0$ is the initial number of susceptible individuals.
+
+\subsection{Probability and Binomial Distribution Approach}
+In a grid-based network, the speed of infection can be estimated using probability. The infection probability $\beta$ and the number of nodes $n$ along the shortest path are crucial factors.
+\noindent
+\textbf{Binomial Distribution Approach:}
+Consider a grid where the probability of infection transmission between neighbors is $\beta$. The expected number of infected nodes at distance $k$ can be modeled with a binomial distribution:
+\begin{equation}
+P(X = k) = \binom{n}{k} \beta^k (1 - \beta)^{n-k}
+\end{equation}
+
+\section{Conclusion}
+This chapter has provided a comprehensive overview of the mathematical models used to study infectious disease spread, with a focus on the SIRS model. We discussed the differential equations governing these models and methods to quantify the speed of infection using both reproduction number and probabilistic approaches. These foundational concepts are crucial for understanding the dynamics of disease transmission and will inform the subsequent research and analyses in this thesis.

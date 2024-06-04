@@ -1,14 +1,191 @@
 \chapter{Literature Survey}
 
-\section{Paper1}
+\section{Paper 1}
+\textbf{Title:} Identifying Propagation Sources in Networks: State-of-the-Art and Comparative Studies \\
+\textbf{Author:} Wang et al. (2020) \\
+\textbf{Link:} \url{https://ieeexplore.ieee.org/document/7582484}
 
 \subsection{Summary}
 
-XXXXXXX
+This paper provides a comprehensive review of methods for identifying propagation sources in networks, focusing on the challenges and methodologies involved in detecting the origin of spread within various types of networks. The study examines different centrality measures and algorithms used to identify the initial source of propagation, including the Susceptible-Infected-Recovered (SIR) model.
 
-\subsection{Advantages}
+\subsection{Methodology}
 
-XXXXXXX
-\subsection{Disadvantages}
+The authors review several centrality measures such as Degree Centrality, Closeness Centrality, Betweenness Centrality, and Eigenvector Centrality. They analyze these measures in the context of source detection using both grid-based and graph-based models. The performance of these algorithms is evaluated based on their accuracy and computational efficiency in different network structures.
 
-XXXXXXX
+\subsection{Results \& Discussions}
+
+The study finds that combining multiple centrality measures, such as Closeness Centrality and Eigenvector Centrality, improves the accuracy of source detection. The authors also highlight that grid-based models are simpler but less effective compared to more complex network-based models. The comparative analysis demonstrates that no single measure consistently outperforms others across all network types, suggesting the need for hybrid approaches.
+
+\subsection{Area of Improvement}
+
+The paper identifies the need for more robust algorithms that can handle dynamic and real-time data, as well as the integration of probabilistic models to account for uncertainties in network propagation. Future research should also focus on enhancing the scalability of these algorithms for larger networks.
+
+\subsection{Strengths and Weaknesses of the Paper}
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item Comprehensive review of various centrality measures and their application in source detection.
+    \item Detailed comparative analysis providing valuable insights into the strengths and weaknesses of different algorithms.
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item Limited focus on real-time and dynamic network conditions.
+    \item The need for more empirical validation on larger and more diverse datasets.
+\end{itemize}
+
+\subsection{The use of the paper in my thesis}
+
+This paper is relevant to my thesis as it provides foundational knowledge and comparative analysis of centrality measures, which are crucial for the identification of infection sources in network structures. It informs the choice of centrality measures and hybrid approaches that can be applied in both grid-based and network-based models to enhance the accuracy and reliability of source detection in infectious disease simulations.
+
+\section{Paper 2}
+\textbf{Title:} Source Detection of Rumor in Social Network: A Review \\
+\textbf{Author:} Shelke \& Attar (2019) \\
+\textbf{Link:} \url{https://www.sciencedirect.com/science/article/abs/pii/S2468696418300934}
+
+\subsection{Summary}
+
+This review paper focuses on the methodologies for detecting the source of rumors in social networks. It provides a taxonomy of factors influencing source detection and evaluates various state-of-the-art approaches, highlighting their applicability and limitations in different contexts.
+
+\subsection{Methodology}
+
+The paper categorizes source detection methods into different types, including structural, diffusion-based, and probabilistic approaches. It also discusses the role of network features, such as topology and temporal dynamics, in the accuracy of source detection.
+
+\subsection{Results \& Discussions}
+
+The review indicates that structural methods, which utilize the network's topology, are effective for static networks, while diffusion-based methods are better suited for dynamic environments. The authors emphasize the importance of real-time detection systems and the challenges posed by the rapid spread of misinformation.
+
+\subsection{Area of Improvement}
+
+The paper points out the lack of integrated approaches that can combine structural and diffusion-based methods to improve detection accuracy. Future research should also focus on developing more scalable solutions and addressing privacy concerns in social network analysis.
+
+\subsection{Strengths and Weaknesses of the Paper}
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item Thorough review of various source detection approaches in social networks.
+    \item Provides a clear taxonomy and classification of existing methods.
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item Limited discussion on the practical implementation of these methods.
+    \item The need for more comprehensive datasets for empirical evaluation.
+\end{itemize}
+
+\subsection{The use of the paper in my thesis}
+
+This paper is useful for my thesis as it offers a detailed analysis of rumor source detection methodologies, which can be applied to identify infection sources in social networks. The insights into structural and diffusion-based methods provide a framework for developing hybrid approaches that can enhance the detection of infection origins in networked environments.
+
+\section{Paper 3}
+\textbf{Title:} Infection Source Identification Problem Under Classical Graph Centrality Measures \\
+\textbf{Author:} Doe et al. (2018) \\
+\textbf{Link:} \url{https://www.sciencedirect.com/science/article/abs/pii/S2468696420300021}
+
+\subsection{Summary}
+
+This paper investigates the problem of identifying the source of infection in a network using classical graph centrality measures. It explores how different centrality metrics can be used to pinpoint the origin of an outbreak and compares their effectiveness in various network structures.
+
+\subsection{Methodology}
+
+The authors utilize classical centrality measures, including Degree, Betweenness, Closeness, and Eigenvector Centrality, to analyze their performance in source identification. The study employs both synthetic and real-world network data to evaluate these measures.
+
+\subsection{Results \& Discussions}
+
+The findings suggest that Closeness Centrality is particularly effective in identifying sources in densely connected networks, while Betweenness Centrality performs better in networks with distinct community structures. The study highlights the trade-offs between computational complexity and detection accuracy for each centrality measure.
+
+\subsection{Area of Improvement}
+
+The paper calls for the development of new centrality measures that can better handle heterogeneous networks and dynamic conditions. It also suggests the integration of machine learning techniques to enhance source detection accuracy.
+
+\subsection{Strengths and Weaknesses of the Paper}
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item Comprehensive analysis of classical centrality measures.
+    \item Detailed evaluation using both synthetic and real-world data.
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item Limited focus on real-time detection capabilities.
+    \item The need for more advanced methods that can adapt to changing network conditions.
+\end{itemize}
+
+\subsection{The use of the paper in my thesis}
+
+This paper provides essential insights into the use of classical graph centrality measures for source identification, which is directly applicable to my thesis work on infection source detection in networks. The comparative analysis of centrality metrics informs the selection of appropriate measures for different network structures and enhances the robustness of my simulation models.
+
+\section{Paper 4}
+\textbf{Title:} A Stochastic SIRS Epidemic Model with Logistic Growth \\
+\textbf{Author:} Liu et al. (2020) \\
+\textbf{Link:} \url{https://www.sciencedirect.com/science/article/abs/pii/S037843712030011X}
+
+\subsection{Summary}
+
+This paper presents a stochastic SIRS (Susceptible-Infected-Recovered-Susceptible) epidemic model incorporating logistic growth and a general nonlinear incidence rate. The model aims to provide a more realistic representation of disease dynamics by accounting for environmental noise and stochastic perturbations.
+
+\subsection{Methodology}
+
+The authors develop a stochastic differential equation (SDE) to model the SIRS epidemic dynamics, incorporating logistic growth and various incidence rate functions. They use the stochastic Lyapunov function method to establish conditions for the existence of an ergodic stationary distribution of the epidemic's positive solutions.
+
+\subsection{Results \& Discussions}
+
+The study demonstrates that the proposed stochastic model can capture the persistence of an epidemic and its cyclical behavior. The results indicate that the stochastic perturbations play a significant role in the long-term dynamics of the epidemic, affecting the stability and persistence of the disease.
+
+\subsection{Area of Improvement}
+
+Future research should explore the impact of different types of stochastic perturbations and extend the model to multigroup settings. There is also a need for more empirical validation using real-world epidemic data.
+
+\subsection{Strengths and Weaknesses of the Paper}
+
+\subsubsection{Advantages}
+
+\begin{itemize}
+    \item Innovative approach to modeling epidemic dynamics using stochastic processes.
+    \item Rigorous mathematical analysis providing conditions for system stability.
+\end{itemize}
+
+\subsubsection{Disadvantages}
+
+\begin{itemize}
+    \item Limited empirical validation of the model.
+    \item The need for more comprehensive exploration of different types of perturbations.
+\end{itemize}
+
+\subsection{The use of the paper in my thesis}
+
+This paper is integral to my thesis as it offers a stochastic modeling approach that can be applied to simulate the dynamics of infectious diseases in network structures. The insights into stochastic perturbations and their impact on epidemic persistence help refine my simulation models and improve the accuracy of infection source detection.
+
+\section{Book 1}
+\textbf{Title:} Mathematics of Epidemics on Networks \\
+\textbf{Author:} Kiss et al. (2017) \\
+\textbf{Link:} \url{https://link.springer.com/book/10.1007/978-3-319-50806-1}
+
+\subsection{Summary}
+
+This book provides an in-depth exploration of the mathematical models used to describe the spread of epidemics on networks. It covers a wide range of topics, including basic reproduction numbers, differential equations for SIS and SIR models, and various network structures. The book is a comprehensive resource for understanding the theoretical underpinnings of epidemic spread on networks.
+
+\subsection{Usefulness}
+
+The book was particularly helpful in understanding the mathematical foundations of network-based epidemic models. It provided detailed explanations of differential equations for SIS and SIR processes, which were crucial for developing the theoretical framework of my thesis. Additionally, the discussions on different network structures and their impact on disease spread helped in designing and analyzing the grid-based and network-based models used in my research.
+
+\section{Book 2}
+\textbf{Title:} The SIR Model and Identification of Spreaders \\
+\textbf{Author:} Shakarian et al. (2015) \\
+\textbf{Link:} \url{https://link.springer.com/book/10.1007/978-3-319-23105-1}
+
+\subsection{Summary}
+
+This book focuses on the diffusion processes within social networks, covering various models and methods to analyze how information, diseases, and behaviors spread through these networks. It includes discussions on centrality measures, the SIR model, and identification of key spreaders within networks. The book provides a detailed overview of both theoretical and practical aspects of diffusion in social networks.
+
+\subsection{Usefulness}
+
+The book was instrumental in understanding the dynamics of diffusion in social networks and the identification of spreaders. It provided valuable insights into the use of centrality measures and the application of the SIR model for source detection, which were directly applied in the simulation and analysis sections of my thesis. The book also offered practical guidance on implementing simulations and analyzing the results, which helped in refining the methodologies used in my research.

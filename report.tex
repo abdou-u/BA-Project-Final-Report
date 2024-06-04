@@ -1,6 +1,6 @@
 %-----Main FIle------
 
-\documentclass[12pt,a4paper]{report}
+\documentclass[10pt,a4paper]{report}
 
 %adjust your page margins here
 \usepackage[top=0.70in, bottom=0.70in, left=0.8in,right=0.80in]{geometry} % setting the page alignment with this package
@@ -11,6 +11,7 @@
 % \usepackage[hyphens]{url}
 % \usepackage{hyperref}
 \usepackage{mathptmx} % for Times New Roman; pslatex is obsolete
+\usepackage{amsmath}
 \usepackage{array} % for making text bold in table
 \usepackage{url} % for URL formatting
 \hypersetup{
@@ -84,19 +85,19 @@
 %FROM HERE YOUR PAGES START GETTING ADDED
 
 % includes the cover page
-\input{cover.tex} 
+\input{cover} 
 \newpage
 
 % includes the dedication page
-\input{dedication.tex}
+\input{dedication}
 \newpage
 
 % includes the acknowledgements page
-\input{acknowledgements.tex} 
+\input{acknowledgements} 
 \newpage
 
 % includes the abstract page
-\input{abstract.tex}
+\input{abstract}
 \newpage
 
 %TABLE OF CONTENTS AND LIST OF FIGURES ARE AUTOMATICALLY ADDED BY FOLLOWING COMMANDS
@@ -121,16 +122,15 @@
 \newpage
 \pagenumbering{arabic} %reset numbering to normal for the main content
 
-\input{introduction.tex} % adds the introduction page
-\input{literature-survey.tex} % adds the Literatu	re Survey page
-\input{proposed-work.tex} % adds the Project Work page
-\input{research-methodology.tex} % adds the Research Methodology page
-\input{project-design.tex} % adds the Project Design
-\input{implementation.tex} % adds the Project Design
-\input{schedule.tex} % adds the Scheduling and Planning page
-\input{conclusion.tex} % adds the Scheduling and Planning page
+\input{introduction} % adds the introduction page
+\input{literature-survey} % adds the Literature Survey page
+\input{background} % adds the background page
+\input{proposed-work} % adds the Project Work page
+\input{project-design} % adds the Project Design
+\input{implementation} % adds the Project Design
+\input{conclusion} % adds the Scheduling and Planning page
 \newpage
 
-\input{ref.tex} % adds the References page
+\input{ref} % adds the References page
 
 \end{document}

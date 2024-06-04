@@ -1,9 +1,63 @@
 \chapter{Proposed Work}
 
-\section{Problem Statement}
-XXXXXXX
+The study aims to explore both grid-based algorithms and more complex network models, focusing on understanding disease spread dynamics and improving the traceability of infection sources.
 
-\section{Module1}
-XXXXXXX
-\subsection{SubSection1}
-XXXXXXX
+\section{Grid-Based Models}
+Grid-based models are fundamental in epidemiological studies due to their simplicity and structured nature. These models represent the population as nodes in a grid, where each node can be in one of several states (susceptible, infected, recovered). The spread of disease is simulated by allowing the infection to propagate from one node to its neighboring nodes.
+
+\subsection{Algorithm Selection}
+Three primary algorithms were selected for their distinct approaches and potential effectiveness in source identification within grid-based models:
+
+\begin{enumerate}
+    \item Jordan Center Identification using BFS
+    \item Euclidean Distance Minimization
+    \item Center of Mass Identification
+\end{enumerate}
+
+\subsection{Performance Metrics}
+The performance of the selected algorithms is evaluated based on the following criteria:
+\begin{enumerate}
+    \item Accuracy
+    \item Complexity
+    \item Handling Boundaries
+\end{enumerate}
+
+\section{Complex Network Models}
+The exploration of complex network models is essential for a comprehensive understanding of disease spread dynamics in real-world scenarios. Unlike grid-based models, complex networks exhibit diverse structures and connectivity patterns, which can significantly influence the spread of infections.
+
+\subsection{Network Types}
+
+\subsubsection{Erdős–Rényi Graphs}
+Erdős–Rényi graphs are characterized by having a fixed number of nodes where each pair of nodes is connected with a fixed probability. They are useful for modeling random connections in a network, providing a basis for understanding the impact of randomness on disease spread.
+
+\subsubsection{Random Regular Graphs}
+Random Regular graphs consist of nodes each with the same number of connections (degree), ensuring uniformity in node connectivity. They help in examining disease spread in networks with uniform connectivity, highlighting the effect of equal distribution of contacts.
+
+\subsubsection{Random Geometric Graphs}
+Random Geometric graphs are constructed by placing nodes randomly in a geometric space and connecting nodes that are within a certain distance from each other. They simulate spatial networks, making them suitable for studying geographic constraints on the spread of infections.
+
+\subsection{Algorithm Selection}
+For the analysis of infection spread on complex networks, several algorithms were selected based on their effectiveness in identifying the source of infection:
+
+\begin{enumerate}
+    \item Jordan Center Identification
+    \item Eccentricity and Closeness Centrality Methodology
+    \item Rumor Centrality Methodology
+    \item Betweenness Centrality
+    \item Eigenvector Centrality
+\end{enumerate}
+
+\subsection{Performance Metrics}
+The performance of the algorithms on complex networks is measured based on the following criteria:
+\begin{enumerate}
+    \item Accuracy: The precision of the algorithm in correctly identifying the source of infection.
+    \item Scalability: The ability of the algorithm to handle increasing network sizes effectively.
+    \item Robustness: The algorithm's performance under varying network conditions and infection parameters.
+\end{enumerate}
+
+
+\section{Stochastic Approach: Stochastic Differential Equations (SDEs)}
+We employed stochastic differential equations to introduce randomness into the infection spread models. They allow for the incorporation of stochastic variations and uncertainties in the transmission process. The Gillespie Algorithm will be employed to simulate the stochastic models. This algorithm is particularly suitable for simulating the time evolution of systems with random events, such as the spread of infectious diseases. We'll then compare the stochastic approach to the deterministic approach.
+
+\section{Summary}
+This chapter has outlined the proposed work, detailing the objectives and expected outcomes of the research. The focus is on comparing grid-based algorithms and complex network models to enhance the understanding of disease spread dynamics.

@@ -1,4 +1,24 @@
 \chapter{Introduction}
+Infectious diseases necessitate robust models to simulate their spread. Network analysis serves as a powerful tool in this domain, enabling researchers to visualize and predict how diseases propagate through communities. This project utilizes grid-based and network-based simulations to explore the dynamics of disease spread, employing various structures to mirror the complexity of real-world interactions.
 
-\section{Need}
-XXXXXXX
+\section{Main Challenges}
+One of the main challenges in this research is the identification of the source of an infection within a network. This task is particularly daunting due to the diverse and complex nature of network structures, which can significantly affect the propagation paths of infectious agents.
+
+\section{Limitations}
+Existing models like the SIR and SIS, while foundational, often fall short in capturing phenomena such as waning immunity and recurrent infections, which are critical for understanding diseases like COVID-19.
+
+\section{Introduction to the SIRS Model}
+The SIRS model addresses these shortcomings by incorporating waning immunity, making it particularly relevant for diseases that do not confer lifelong immunity. This model forms the cornerstone of our study.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{SIRS_Model_Dynamics.png}
+    \caption{SIRS model dynamics}
+    \label{fig:SIRS_Model_Dynamics}
+\end{figure}
+
+\section{Approach}
+Our approach integrates simulating an infectious disease on both grid-based and graph-based models, then applying our source recovery detection algorithms. We will employ various centrality measures to enhance the accuracy of source identification. The goal is to have a clear success rate of infection source recovery over time and to understand the underlying reasons for these results. This allows for a comprehensive analysis of infection dynamics, accommodating the distinct features of each network type. The integration of multiple network models and centrality measures is essential for developing a nuanced understanding of disease spread.
+
+\section{Thesis Statement}
+Our comparative study shows a marked improvement in source detection within both fixed and non-fixed boundary conditions for a grid-based model and how these source detection algorithms work on other network models. The core contribution of this thesis lies in its development of a simulation framework that adapts to various network structures, enhancing the accuracy of source detection. This advancement not only improves our theoretical understanding of network-based disease spread but also has practical implications for designing more effective containment measures.
