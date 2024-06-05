@@ -1,6 +1,8 @@
-\chapter{Background}
+\chapter{Mathematical Modeling}
 
-Understanding the dynamics of infectious disease spread is crucial for developing effective control strategies. This chapter provides the foundational knowledge necessary for modeling infectious diseases, focusing on one key model: \textbf{SIRS}. We will discuss the differential equations governing this model and methods to quantify the speed of infection.
+Understanding the spread of infectious diseases in complex networks is critical for effective epidemic control \cite{hellewell2020, britton2021}. Network theory provides valuable insights into how diseases propagate through populations \cite{newman2010}, and centrality measures play a crucial role in identifying influential spreaders and potential epidemic sources \cite{gomez2011}.
+
+This chapter provides the foundational knowledge necessary for modeling infectious diseases, focusing on one key model: \textbf{SIRS}. We will discuss the differential equations governing this model and methods to quantify the speed of infection.
 
 \section{Mathematical Modeling of Disease Spread}
 Infectious diseases can be modeled using differential equations that describe the changes in the number of susceptible (S), infected (I), and recovered (R) individuals over time.
@@ -16,22 +18,37 @@ The SIRS model includes a return to susceptibility after recovery, accounting fo
 The differential equations for the SIRS model are:
 \begin{equation}
 \frac{dS}{dt} = \delta R - \beta SI,
+\label{equation:3.1}
 \end{equation}
 \begin{equation}
 \frac{dI}{dt} = \beta SI - \gamma I,
+\label{equation:3.2}
 \end{equation}
 \begin{equation}
 \frac{dR}{dt} = \gamma I - \delta R,
+\label{equation:3.3}
 \end{equation}
+
 where $\delta$ is the rate at which recovered individuals become susceptible again.\\
+
 \noindent
 To capture the inherent randomness in disease spread, the stochastic version of the model can be represented using stochastic differential equations (SDEs). These SDEs account for random fluctuations in the infection dynamics through Wiener processes.
 
-\begin{align}
-dS &= \left(\delta R - \beta SI\right) \, dt + \sigma_S \, S \, dW_S, \\
-dI &= \left(\beta SI - \gamma I\right) \, dt + \sigma_I \, I \, dW_I, \\
-dR &= \left(\gamma I - \delta R\right) \, dt + \sigma_R \, R \, dW_R,
-\end{align}
+\begin{equation}
+dS = \left(\delta R - \beta SI\right) \, dt + \sigma_S \, S \, dW_S,
+\label{equation:3.4}
+\end{equation}
+
+\begin{equation}
+dI = \left(\beta SI - \gamma I\right) \, dt + \sigma_I \, I \, dW_I,
+\label{equation:3.5}
+\end{equation}
+
+\begin{equation}
+dR = \left(\gamma I - \delta R\right) \, dt + \sigma_R \, R \, dW_R,
+\label{equation:3.6}
+\end{equation}
+
 \noindent
 Here, \(dW_S\), \(dW_I\), and \(dW_R\) are increments of independent Wiener processes representing random fluctuations in the susceptible, infected, and recovered populations, respectively. The terms \(\sigma_S\), \(\sigma_I\), and \(\sigma_R\) denote the intensities of these fluctuations.
 
