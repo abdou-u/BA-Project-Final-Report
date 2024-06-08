@@ -9,6 +9,9 @@
 \usepackage{hyperref} % for creating links in the pdf version and other additional pdf attributes, no effect on the printed document
 \usepackage{float} % used for figure placement with H as a parameter
 \usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{caption}
 % \usepackage[hyphens]{url}
 % \usepackage{hyperref}
 \usepackage{mathptmx} % for Times New Roman; pslatex is obsolete
@@ -64,7 +67,8 @@
 % Define the default page style
 \fancypagestyle{plain}{%
   \fancyhf{} % Clear all header and footer fields
-  \fancyfoot[L]{\emph{This project implements multiple source detection techniques on different networks}} % Left footer
+  \fancyfoot[L]{\emph{Simulation and Source Detection of Infectious
+Processes on Networks}} % Left footer
   \fancyfoot[R]{\thepage} % Right footer
   \renewcommand{\headrulewidth}{0pt} % No header line
   \renewcommand{\footrulewidth}{0.4pt} % Footer line
@@ -133,5 +137,7 @@
 \newpage
 
 \input{ref} % adds the References page
+
+\input{appendix}
 
 \end{document}

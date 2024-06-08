@@ -4,410 +4,117 @@
 This chapter details the implementation of the models, algorithms, and simulations discussed in this study. The focus is on providing the necessary code snippets and explaining the logic behind the implementations. Additionally, we discuss the computational complexity of each algorithm.
 
 \section{Model Structures and Algorithms}
-\subsection{Overview}
-In this study, we implemented both grid-based and complex network models to simulate the spread of infectious diseases. The grid-based models offer simplicity and structured analysis, while the complex network models provide a more realistic representation of real-world interactions. We also incorporated stochastic elements to capture the randomness observed in real-world scenarios.
 
 \subsection{Grid-Based Model Implementation}
-
-The grid-based model is a fundamental approach in epidemiological studies. It represents the population as nodes in a grid, where each node can be in one of several states: susceptible, infected, or recovered. The disease spreads to neighboring nodes based on defined rules.\\
-
 We chose to use NumPy for grid-based algorithms due to its efficiency in handling large arrays and performing mathematical operations. NumPy's operations are optimized for performance, making it faster than using a network library like NetworkX for grid-based structures. Additionally, we used the JIT (Just-In-Time) compilation feature from the Numba library to further optimize our distance calculations, ensuring that our algorithms run efficiently even on large grids.
 
 \subsubsection{Jordan Centrality}
 The Jordan Center Identification algorithm utilizes the Breadth-First Search (BFS) to determine the central node that minimizes the maximum distance to all other nodes. This method calculates the centrality score for each candidate node, selecting the node with the highest score as the source.
 
-\begin{lstlisting}[caption=Jordan Centrality using BFS, label=lst:jordan-center]
-import numpy as np
-import time
-from collections import deque
-
-def bfs(grid, start_pos):
-    # Implement BFS to calculate distances
-    pass  # Omitted for brevity
-
-def infection_nodes(grid):
-    # Identify all infected or previously infected nodes
-    pass
-
-def find_infection_source_bfs(grid):
-    height, width = grid.shape
-
-    # For SIRS, we take nodes that are infected or were infected
-    candidate_nodes = infection_nodes(grid)
-
-    centrality_scores = np.zeros_like(grid, dtype=np.float32)
-
-    global_start_time = time.time()
-    for i, start_pos in enumerate(candidate_nodes):
-        start_time = time.time()
-        start_pos_tuple = tuple(start_pos)
-        
-        # Pass the precomputed infected nodes if applicable
-        distances = bfs(grid, start_pos_tuple)
-
-        # Compute centrality score considering distances to other nodes
-        reachable_nodes = distances[distances != -1]  # Exclude unreachable nodes
-        num_reachable_nodes = len(reachable_nodes) - 1  # Exclude the start node itself
-        total_distance = np.sum(reachable_nodes)
-        
-        if num_reachable_nodes > 0:
-            average_distance = total_distance / num_reachable_nodes
-            centrality_scores[start_pos_tuple] = 1 / average_distance
-        else:
-            centrality_scores[start_pos_tuple] = 0
-
-    # Find the node with the highest centrality score
-    source_node = np.unravel_index(np.argmax(centrality_scores), grid.shape)
-    
-    return source_node
-\end{lstlisting}
+\begin{algorithm}
+\caption{Jordan Centrality using BFS}
+\begin{algorithmic}[1]
+\STATE Initialize centrality scores for each node.
+\FOR{each candidate node}
+    \STATE Perform BFS to calculate distances.
+    \STATE Compute centrality score based on distances.
+\ENDFOR
+\STATE Select the node with the highest centrality score as the source.
+\end{algorithmic}
+\end{algorithm}
 
 \textbf{Time Complexity:} The BFS algorithm has a time complexity of \(O(V + E)\), where \(V\) is the number of vertices (nodes) and \(E\) is the number of edges (connections). Since this algorithm is applied to each candidate node, the overall complexity can be considered \(O(N(V + E))\) where \(N\) is the number of candidate nodes.
 
 \subsubsection{Center of Mass}
 The Center of Mass algorithm calculates the mean position of all infected nodes and designates this point as the source of the infection. This method is computationally efficient but can be less accurate, especially near grid boundaries.
 
-\begin{lstlisting}[caption=Center of Mass Algorithm, label=lst:center-of-mass]
-import numpy as np
+\begin{algorithm}
+\caption{Center of Mass Algorithm}
+\begin{algorithmic}[1]
+\STATE Identify all boundary nodes.
+\STATE Perform flood fill to isolate internal and external boundaries.
+\STATE Calculate the centroid of the boundary nodes.
+\STATE Designate the centroid as the source.
+\end{algorithmic}
+\end{algorithm}
 
-def flood_fill(grid, mask, start_i, start_j, target_val, fill_value):
-    stack = {(start_i, start_j)}  # Using a set to avoid duplicate positions
-    while stack:
-        x, y = stack.pop()
-        if mask[x, y] != fill_value and grid[x, y] == target_val:
-            mask[x, y] = fill_value
-            base_idx = (x * width + y) * 4
-            for k in range(4):  # Changed loop variable to k to avoid confusion with i, j
-                neighbor_idx = neighbors_map[base_idx + k]
-                if neighbor_idx != -1:  # Valid neighbor index
-                    nx, ny = divmod(neighbor_idx, width)  # Convert flat index to 2D indices
-                    if mask[nx, ny] != fill_value:
-                        stack.add((nx, ny))
-
-def find_external_boundary_grid(grid):
-    height, width = grid.shape
-    infected_val = 0  # Infected nodes
-    susceptible_val = -1  # Susceptible nodes
-
-    # Step 1: Identify All Potential Boundary Nodes
-    potential_boundary = np.zeros_like(grid, dtype=bool)
-    for i in range(height):
-        for j in range(width):
-            if grid[i, j] == infected_val:
-                base_idx = (i * width + j) * 4
-                for k in range(4):
-                    neighbor_idx = neighbors_map[base_idx + k]
-                    if neighbor_idx != -1:
-                        nx, ny = divmod(neighbor_idx, width)
-                        if grid[nx, ny] == susceptible_val:
-                            potential_boundary[i, j] = True
-                            break
-
-    # Step 2: Flood Fill from Grid Edges
-    mask = np.zeros_like(grid, dtype=bool)
-    edge_indices = np.hstack((np.arange(0, width), np.arange(grid.size - width, grid.size)))
-    for edge_idx in edge_indices:
-        i, j = divmod(edge_idx, width)
-        if grid[i, j] == susceptible_val and not mask[i, j]:
-            flood_fill(grid, mask, i, j, susceptible_val, True)
-
-    # Step 3: Identify Internal Potential Boundary Nodes
-    internal_potential_boundary = np.zeros_like(grid, dtype=bool)
-    for i in range(height):
-        for j in range(width):
-            if potential_boundary[i, j]:
-                base_idx = (i * width + j) * 4
-                for k in range(4):
-                    neighbor_idx = neighbors_map[base_idx + k]
-                    if neighbor_idx != -1:
-                        nx, ny = divmod(neighbor_idx, width)  # Convert flat index to 2D indices
-                        if mask[nx, ny]:
-                            internal_potential_boundary[i, j] = True
-                            break
-
-    # Step 4: Isolate Actual Boundary Nodes
-    actual_boundary = potential_boundary & internal_potential_boundary
-
-    return actual_boundary
-
-def find_centroid_mean(external_boundary_grid):
-    boundary_indices = np.argwhere(external_boundary_grid)
-    
-    # Calculate the centroid (mean position) of the boundary points.
-    centroid_x, centroid_y = np.mean(boundary_indices, axis=0)
-    
-    # The centroid coordinates are given as (centroid_x, centroid_y).
-    # If you need to round them to the nearest integer (since grid indices are integers), you can do:
-    centroid_x = int(round(centroid_x))
-    centroid_y = int(round(centroid_y))
-    
-    centroid = (centroid_x, centroid_y)
-    return centroid
-    
-centroid = find_centroid_mean(find_external_boundary_grid(grid))
-print(centroid)
-\end{lstlisting}
-
-\textbf{Time Complexity:} The flood fill algorithm has a time complexity of \(O(n)\), where \(n\) is the number of nodes in the grid. The overall complexity for finding the centroid is also \(O(n)\) since it requires visiting each node.
+\textbf{Time Complexity:} The flood fill algorithm has a time complexity of \(O(N)\), where \(N\) is the number of nodes in the grid. The overall complexity for finding the centroid is also \(O(N)\) since it requires visiting each node.
 
 \subsubsection{Distance Analysis}
 The Distance Analysis algorithm calculates the maximum Euclidean distance from each candidate node to any point on the boundary and identifies the node that minimizes this maximum distance.
 
-\begin{lstlisting}[caption=Distance Analysis Algorithm, label=lst:distance-analysis]
-import numpy as np
-from numba import jit
-from collections import deque
+\begin{algorithm}
+\caption{Distance Analysis Algorithm}
+\begin{algorithmic}[1]
+\STATE Identify all boundary nodes.
+\FOR{each candidate node}
+    \STATE Calculate the maximum Euclidean distance to the boundary nodes.
+    \STATE Track the node that minimizes this maximum distance.
+\ENDFOR
+\STATE Designate the node with the minimum maximum distance as the source.
+\end{algorithmic}
+\end{algorithm}
 
-@jit(nopython=True)
-def max_euc_distance_to_boundary(x0, y0, boundary_indices):
-    """Calculate the maximum Euclidean distance from (x0, y0) to any boundary point."""
-    max_distance = 0.0
-    for index in range(boundary_indices.shape[0]):
-        x, y = boundary_indices[index]
-        euc_distance = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
-        if euc_distance > max_distance:
-            max_distance = euc_distance
-    return max_distance
-
-def find_infection_source_euc_distance(grid):
-    """Find the source of infection by minimizing the maximum distance to the external boundary."""
-    height, width = grid.shape
-    start_pos = (height // 2, width // 2)
-
-    # Convert the external boundary to a NumPy array of indices for efficient processing
-    external_boundary_grid = find_external_boundary_grid(grid)
-    external_boundary_indices = np.argwhere(external_boundary_grid)
-    
-    # Initialize queue and visited set
-    queue = deque([start_pos])
-    visited = set([start_pos])
-    current_best_node = start_pos
-            current_min_max_distance = max_euc_distance_to_boundary(start_pos[0], start_pos[1], external_boundary_indices)
-
-    while queue:
-        x0, y0 = queue.popleft()
-
-        # Check all neighbors to find the one with the smallest maximum distance to the boundary
-        min_neighbor_distance = float('inf')
-        next_node = None
-
-        base_index = (x0 * width + y0) * 4
-        for i in range(4):
-            neighbor_idx = neighbors_map[base_index + i]
-            if neighbor_idx == -1:
-                continue
-
-            nx0, ny0 = divmod(neighbor_idx, width)
-            if (nx0, ny0) not in visited:
-                visited.add((nx0, ny0))
-                n_max_distance = max_euc_distance_to_boundary(nx0, ny0, external_boundary_indices)
-                if n_max_distance < min_neighbor_distance:
-                    min_neighbor_distance = n_max_distance
-                    next_node = (nx0, ny0)
-                    
-        if next_node and min_neighbor_distance < current_min_max_distance:
-            # Only proceed if the next node improves the maximum distance
-            queue.append(next_node)
-            current_min_max_distance = min_neighbor_distance
-            current_best_node = next_node
-
-    return current_best_node
-\end{lstlisting}
-
-\textbf{Time Complexity:} The main operations in this algorithm involve iterating over the grid nodes and computing Euclidean distances. The time complexity is \(O(n \cdot m)\), where \(n\) is the number of nodes and \(m\) is the number of boundary nodes.
+\textbf{Time Complexity:} The main operations in this algorithm involve iterating over the grid nodes and computing Euclidean distances. The time complexity is \(O(N \cdot M)\), where \(N\) is the number of nodes and \(M\) is the number of boundary nodes.
 
 \subsection{Complex Network Models Implementation}
 In this section, we focus on the implementation of centrality measures for source detection in complex network models. We use various centrality measures to identify the infection source within networks such as Erdős-Rényi graphs, Random Regular graphs, and Random Geometric graphs.
 
-\subsubsection{Eccentricity + Closeness Centrality}
+The centrality measures we implemented include those mentioned and explained in \ref{centrality_measure}, which are:
 
-The combination of Eccentricity and Closeness Centrality (EC\_CC) aims to improve the accuracy of source detection by leveraging both metrics. This method normalizes and combines eccentricity and closeness scores to identify the most likely infection source.
+\begin{itemize}
+    \item Eccentricity + Closeness Centrality
+    \item Jordan Center
+    \item Betweenness Centrality
+    \item Eigenvector Centrality
+    \item Closeness Centrality
+\end{itemize}
 
-\begin{lstlisting}[caption=Eccentricity + Closeness Centrality, label=lst:ec-cc]
-import networkx as nx
-import numpy as np
-import time
+We used the NetworkX library to implement these centrality measures. The library provides efficient functions to compute the various centrality metrics, allowing us to focus on integrating these measures into our source detection framework.
 
-def normalize_scores(scores):
-    min_score = min(scores.values())
-    max_score = max(scores.values())
-    if max_score == min_score:  # Avoid division by zero if all values are the same
-        return {node: 1.0 for node in scores}
-    return {node: (scores[node] - min_score) / (max_score - min_score) for node in scores}
-
-def find_source_node_EC_CC(G, candidate_nodes):
-    subgraph = G.subgraph(candidate_nodes)
-    eccentricity = nx.eccentricity(subgraph)
-    closeness = nx.closeness_centrality(subgraph)
-    norm_ecc = normalize_scores(eccentricity)
-    norm_close = normalize_scores(closeness)
-    combined_scores = {node: (1 - norm_ecc[node]) + norm_close[node] for node in candidate_nodes}
-    source_node = max(candidate_nodes, key=combined_scores.get)
-    return source_node
-\end{lstlisting}
-
-\textbf{Time Complexity:} The calculation of eccentricity has a time complexity of \(O(V \cdot (V + E))\), where \(V\) is the number of vertices and \(E\) is the number of edges. Closeness centrality also has a time complexity of \(O(V \cdot (V + E))\). Therefore, the overall time complexity is \(O(V \cdot (V + E))\).
-
-\textbf{Space Complexity:} The space complexity is \(O(V + E)\) for storing the graph and the centrality scores.
-
-\subsubsection{Jordan Center}
-
-The Jordan Center algorithm identifies the node with the minimum eccentricity in a subgraph of candidate nodes.
-
-\begin{lstlisting}[caption=Jordan Center Algorithm, label=lst:jordan-center]
-def find_jordan_center(G, candidate_nodes):
-    subG = G.subgraph(candidate_nodes)
-    eccentricity = nx.eccentricity(subG)
-    min_eccentricity = min(eccentricity.values())
-    jordan_center = [node for node, ecc in eccentricity.items() if ecc == min_eccentricity]
-    return jordan_center
-\end{lstlisting}
-
-\textbf{Time Complexity:} The time complexity for calculating eccentricity is \(O(V \cdot (V + E))\).
-
-\textbf{Space Complexity:} The space complexity is \(O(V + E)\) for storing the subgraph and eccentricity scores.
-
-\subsubsection{Betweenness Centrality}
-
-Betweenness Centrality measures the extent to which a node lies on the shortest paths between other nodes, identifying critical nodes for infection spread.
-
-\begin{lstlisting}[caption=Betweenness Centrality Algorithm, label=lst:betweenness-centrality]
-def betweenness_centrality(G, candidate_nodes):
-    subgraph = G.subgraph(candidate_nodes)
-    centrality = nx.betweenness_centrality(subgraph)
-    source_node = max(candidate_nodes, key=centrality.get)
-    return source_node
-\end{lstlisting}
-
-\textbf{Time Complexity:} The time complexity of betweenness centrality is \(O(V \cdot E)\).
-
-\textbf{Space Complexity:} The space complexity is \(O(V + E)\) for storing the graph and centrality scores.
-
-\subsubsection{Eigenvector Centrality}
-
-Eigenvector Centrality assigns relative scores to all nodes based on the principle that connections to high-scoring nodes contribute more to a node's score.
-
-\begin{lstlisting}[caption=Eigenvector Centrality Algorithm, label=lst:eigenvector-centrality]
-def eigenvector_centrality(G, candidate_nodes):
-    subgraph = G.subgraph(candidate_nodes)
-    centrality = nx.eigenvector_centrality(subgraph, max_iter=1000)
-    source_node = max(candidate_nodes, key=centrality.get)
-    return source_node
-\end{lstlisting}
-
-\textbf{Time Complexity:} The time complexity of eigenvector centrality is \(O(V + E)\) per iteration.
-
-\textbf{Space Complexity:} The space complexity is \(O(V + E)\) for storing the graph and centrality scores.
-
-\subsubsection{Closeness Centrality}
-
-Closeness Centrality measures the average length of the shortest path from a node to all other nodes in the network.
-
-\begin{lstlisting}[caption=Closeness Centrality Algorithm, label=lst:closeness-centrality]
-def closeness_centrality(G, candidate_nodes):
-    subgraph = G.subgraph(candidate_nodes)
-    centrality = nx.closeness_centrality(subgraph)
-    source_node = max(candidate_nodes, key=centrality.get)
-    return source_node
-\end{lstlisting}
-
-\textbf{Time Complexity:} The time complexity of closeness centrality is \(O(V \cdot (V + E))\).
-
-\textbf{Space Complexity:} The space complexity is \(O(V + E)\) for storing the graph and centrality scores.\\
-
-By incorporating these centrality measures into our network simulations, we were able to enhance the accuracy of infection source detection across different network structures. Each centrality measure has its own strengths and weaknesses, and the choice of measure depends on the specific characteristics of the network and the requirements of the analysis.
+ Each centrality measure has its own strengths and weaknesses, and the choice of measure depends on the specific characteristics of the network and the requirements of the analysis.
 
 This concludes the implementation section for the complex network models. Next, we will discuss the stochastic approach.
 
 \subsection{Stochastic Approach Implementation}
-In this section, we detail the implementation of the stochastic approach to model infection spread. This approach incorporates randomness into the models to better capture real-world scenarios. The stochastic models are implemented using Stochastic Differential Equations (SDEs) and the Gillespie Algorithm.
-
-\subsubsection{Stochastic Differential Equations}
-The SDEs for the SIRS model, which incorporate Wiener processes to account for random perturbations in the state of susceptible, infected, and recovered individuals, are given by equations \ref{equation:3.4}, \ref{equation:3.5}, and \ref{equation:3.6} in the background chapter.
-
-To implement these equations, we used the Euler-Maruyama method, a numerical technique for solving SDEs. The following code snippet demonstrates the implementation of the Euler-Maruyama method for the SIRS model:
-
-\begin{lstlisting}[caption=Euler-Maruyama Method for SIRS Model, label=lst:euler-maruyama]
-import numpy as np
-
-def euler_maruyama_sirs(S0, I0, R0, beta, gamma, delta, sigma_S, sigma_I, sigma_R, T, dt):
-    num_steps = int(T / dt)
-    S, I, R = np.zeros(num_steps), np.zeros(num_steps), np.zeros(num_steps)
-    S[0], I[0], R[0] = S0, I0, R0
-
-    for t in range(1, num_steps):
-        dW_S = np.random.normal(0, np.sqrt(dt))
-        dW_I = np.random.normal(0, np.sqrt(dt))
-        dW_R = np.random.normal(0, np.sqrt(dt))
-
-        S[t] = S[t-1] + (delta * R[t-1] - beta * S[t-1] * I[t-1]) * dt + sigma_S * S[t-1] * dW_S
-        I[t] = I[t-1] + (beta * S[t-1] * I[t-1] - gamma * I[t-1]) * dt + sigma_I * I[t-1] * dW_I
-        R[t] = R[t-1] + (gamma * I[t-1] - delta * R[t-1]) * dt + sigma_R * R[t-1] * dW_R
-
-    return S, I, R
-\end{lstlisting}
-
-\textbf{Time Complexity:} The Euler-Maruyama method has a time complexity of \(O(T / dt)\), where \(T\) is the total simulation time and \(dt\) is the time step.
-
-\textbf{Space Complexity:} The space complexity is \(O(T / dt)\) for storing the time series data for \(S\), \(I\), and \(R\).
+In this section, we detail the implementation of the stochastic approach to model infection spread using the Gillespie Algorithm.
 
 \subsubsection{Gillespie Algorithm}
-The Gillespie Algorithm is used to simulate the time evolution of systems with random events, such as the spread of infectious diseases. The flowchart of the Gillespie Algorithm is shown in Figure \ref{fig:gillespie_algorithm}.
+The Gillespie Algorithm is used to simulate the time evolution of systems with random events, such as the spread of infectious diseases. Its flowchart is shown in Figure \ref{fig:gillespie_algorithm}.
 
-The Gillespie Algorithm involves calculating propensities for each possible event, generating random numbers to determine the next event and its timing, and updating the system state accordingly. The following code snippet demonstrates the implementation of the Gillespie Algorithm for the SIRS model:
+It involves calculating propensities for each possible event, generating random numbers to determine the next event and its timing, and updating the system state accordingly. The following code snippet demonstrates the implementation of the Gillespie Algorithm for the SIRS model:
 
-\begin{lstlisting}[caption=Gillespie Algorithm for SIRS Model, label=lst:gillespie-algorithm]
-import numpy as np
-
-def gillespie_sirs(S0, I0, R0, beta, gamma, delta, T):
-    S, I, R = [S0], [I0], [R0]
-    t = 0
-
-    while t < T:
-        N = S[-1] + I[-1] + R[-1]
-        rates = [
-            beta * S[-1] * I[-1] / N,  # Infection rate
-            gamma * I[-1],             # Recovery rate
-            delta * R[-1]              # Loss of immunity rate
-        ]
-        rate_sum = sum(rates)
-
-        if rate_sum == 0:
-            break
-
-        tau = np.random.exponential(1 / rate_sum)
-        t += tau
-        rand = np.random.random() * rate_sum
-
-        if rand < rates[0]:
-            S.append(S[-1] - 1)
-            I.append(I[-1] + 1)
-            R.append(R[-1])
-        elif rand < rates[0] + rates[1]:
-            S.append(S[-1])
-            I.append(I[-1] - 1)
-            R.append(R[-1] + 1)
-        else:
-            S.append(S[-1] + 1)
-            I.append(I[-1])
-            R.append(R[-1] - 1)
-
-    return np.array(S), np.array(I), np.array(R)
-\end{lstlisting}
-
-\textbf{Time Complexity:} The Gillespie Algorithm has a time complexity that depends on the number of events and the rate sum. It is generally efficient for simulating systems with discrete events.
-
-\textbf{Space Complexity:} The space complexity is \(O(T)\) for storing the time series data for \(S\), \(I\), and \(R\).\\
-
-By incorporating these stochastic methods, we were able to capture the inherent randomness and variability observed in real-world infection spread scenarios. The next section will provide a comparative analysis of the stochastic and deterministic approaches.
+\begin{algorithm}
+\caption{Gillespie Algorithm for SIRS Model}
+\begin{algorithmic}[1]
+\STATE Initialize S, I, R, and time.
+\WHILE{time $<$ T}
+    \STATE Calculate rates: infection, recovery, loss of immunity.
+    \STATE Calculate total rate.
+    \IF{total rate == 0}
+        \STATE break.
+    \ENDIF
+    \STATE Draw time step from exponential distribution.
+    \STATE Update time.
+    \STATE Draw event type.
+    \IF{infection event}
+        \STATE Update S, I, R.
+    \ELSIF{recovery event}
+        \STATE Update S, I, R.
+    \ELSIF{loss of immunity event}
+        \STATE Update S, I, R.
+    \ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \section{Conclusion}
-In this chapter, we have detailed the implementation of the models, algorithms, and simulations used in this study to analyze the spread of infectious diseases. We provided code snippets for key components, including the grid-based models, complex network models, and stochastic approaches. 
+In this chapter, we have detailed the implementation of the models, algorithms, and simulations used in this study to analyze the spread of infectious diseases. We provided code snippets for key components, including the grid-based models and stochastic approaches. 
 
 For the grid-based models, we implemented three main algorithms: Jordan Centrality, Center of Mass, and Distance Analysis. Each algorithm was discussed in terms of its implementation details, time complexity, and space complexity. We used NumPy for efficient computation and the JIT compiler from Numba to optimize performance.
 
-For the complex network models, we implemented various centrality measures such as Eccentricity + Closeness Centrality, Jordan Centrality, Betweenness Centrality, Eigenvector Centrality, and Closeness Centrality. We discussed the code for calculating these centrality measures and finding the source node in different types of networks.
+For the complex network models, we implemented various centrality measures such as Eccentricity + Closeness Centrality, Jordan Centrality, Betweenness Centrality, Eigenvector Centrality, and Closeness Centrality.
 
-In the stochastic approach, we incorporated randomness into the models using Stochastic Differential Equations (SDEs) and the Gillespie Algorithm. The implementation of these methods was described along with their computational complexities.
+In the stochastic approach, we incorporated randomness into the models using the Gillespie Algorithm. The implementation of this method was described along with its computational complexity.
 
 By implementing these models and algorithms, we were able to simulate the spread of infectious diseases in different network structures and compare the effectiveness of various source detection methods. The detailed implementation provided in this chapter serves as a foundation for further analysis and experimentation in the field of epidemiological modeling.

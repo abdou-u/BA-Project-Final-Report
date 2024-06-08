@@ -3,7 +3,21 @@
 The study aims to explore both grid-based algorithms and more complex network models, focusing on understanding disease spread dynamics and improving the traceability of infection sources.
 
 \section{Grid-Based Models}
-Grid-based models are fundamental in epidemiological studies due to their simplicity and structured nature. These models represent the population as nodes in a grid, where each node can be in one of several states (susceptible, infected, recovered). The spread of disease is simulated by allowing the infection to propagate from one node to its neighboring nodes.
+
+Grid-based models are fundamental in epidemiological studies due to their simplicity and structured nature. These models represent the population as nodes in a grid, where each node can be in one of several states: susceptible, infected, or recovered. The spread of disease is simulated by allowing the infection to propagate from one node to its neighboring nodes.
+
+The infection probabilities on neighbors in a grid-based model were discussed in detail in the Mathematical Modeling chapter along with the interaction rules (Section \ref{section:infection_probabilities}).
+
+\label{section:boundary_conditions}
+Moreover, boundary conditions are crucial in grid-based models as they influence the spread of infection, especially at the edges of the grid. There are two primary types of boundary conditions:
+\begin{itemize}
+    \item \textbf{Fixed Boundary:} In a fixed boundary grid, nodes at the edges have fewer neighbors compared to nodes in the interior. This can create edge effects where the infection dynamics at the boundaries differ significantly from those in the central region.
+    \item \textbf{Wrap-Around Boundary (Toroidal Grid):} In a wrap-around grid, the edges are connected in such a way that the grid forms a torus. This means that nodes at the edges are connected to nodes on the opposite edge, eliminating boundary effects and creating a uniform infection spread throughout the grid.
+\end{itemize}
+
+The structure and configuration of the grid, along with the interaction rules, determine how the infection spreads. In our project, the grid is configured as a square lattice where each node has up to four neighbors (north, south, east, west).
+
+Note that grid-based models provide a foundational approach to studying the spread of infectious diseases. By carefully considering infection probabilities, boundary conditions, and interaction rules, these models can offer valuable insights into the dynamics of disease transmission and the effectiveness of various intervention strategies.
 
 \subsection{Algorithm Selection}
 Three primary algorithms were selected for their distinct approaches and potential effectiveness in source identification within grid-based models:
@@ -41,9 +55,10 @@ For the analysis of infection spread on complex networks, several algorithms wer
 
 \begin{enumerate}
     \item Jordan Center Identification
-    \item Eccentricity and Closeness Centrality Methodology
+    \item Eccentricity and Closeness Centrality
     \item Betweenness Centrality
     \item Eigenvector Centrality
+    \item Closeness Centrality
 \end{enumerate}
 
 \subsection{Performance Metrics}
@@ -51,7 +66,6 @@ The performance of the algorithms on complex networks is measured based on the f
 \begin{enumerate}
     \item Accuracy: The precision of the algorithm in correctly identifying the source of infection.
     \item Scalability: The ability of the algorithm to handle increasing network sizes effectively.
-    \item Robustness: The algorithm's performance under varying network conditions and infection parameters.
 \end{enumerate}
 
 

@@ -1,0 +1,237 @@
+\appendix
+\chapter{Algorithm Implementations}
+
+\section{Jordan Center}
+
+\begin{lstlisting}[caption=Jordan Centrality using BFS, label=lst:jordan-center]
+import numpy as np
+import time
+from collections import deque
+
+def bfs(grid, start_pos):
+    # Implement BFS to calculate distances
+    pass  # Omitted for brevity
+
+def infection_nodes(grid):
+    # Identify all infected or previously infected nodes
+    pass
+
+def find_infection_source_bfs(grid):
+    height, width = grid.shape
+
+    # For SIRS, we take nodes that are infected or were infected
+    candidate_nodes = infection_nodes(grid)
+
+    centrality_scores = np.zeros_like(grid, dtype=np.float32)
+
+    global_start_time = time.time()
+    for i, start_pos in enumerate(candidate_nodes):
+        start_time = time.time()
+        start_pos_tuple = tuple(start_pos)
+        
+        # Pass the precomputed infected nodes if applicable
+        distances = bfs(grid, start_pos_tuple)
+
+        # Compute centrality score considering distances to other nodes
+        reachable_nodes = distances[distances != -1]  # Exclude unreachable nodes
+        num_reachable_nodes = len(reachable_nodes) - 1  # Exclude the start node itself
+        total_distance = np.sum(reachable_nodes)
+        
+        if num_reachable_nodes > 0:
+            average_distance = total_distance / num_reachable_nodes
+            centrality_scores[start_pos_tuple] = 1 / average_distance
+        else:
+            centrality_scores[start_pos_tuple] = 0
+
+    # Find the node with the highest centrality score
+    source_node = np.unravel_index(np.argmax(centrality_scores), grid.shape)
+    
+    return source_node
+\end{lstlisting}
+
+\section{Center of Mass}
+
+\begin{lstlisting}[caption=Center of Mass Algorithm, label=lst:center-of-mass]
+import numpy as np
+
+def flood_fill(grid, mask, start_i, start_j, target_val, fill_value):
+    stack = {(start_i, start_j)}  # Using a set to avoid duplicate positions
+    while stack:
+        x, y = stack.pop()
+        if mask[x, y] != fill_value and grid[x, y] == target_val:
+            mask[x, y] = fill_value
+            base_idx = (x * width + y) * 4
+            for k in range(4):  # Changed loop variable to k to avoid confusion with i, j
+                neighbor_idx = neighbors_map[base_idx + k]
+                if neighbor_idx != -1:  # Valid neighbor index
+                    nx, ny = divmod(neighbor_idx, width)  # Convert flat index to 2D indices
+                    if mask[nx, ny] != fill_value:
+                        stack.add((nx, ny))
+
+def find_external_boundary_grid(grid):
+    height, width = grid.shape
+    infected_val = 0  # Infected nodes
+    susceptible_val = -1  # Susceptible nodes
+
+    # Step 1: Identify All Potential Boundary Nodes
+    potential_boundary = np.zeros_like(grid, dtype=bool)
+    for i in range(height):
+        for j in range(width):
+            if grid[i, j] == infected_val:
+                base_idx = (i * width + j) * 4
+                for k in range(4):
+                    neighbor_idx = neighbors_map[base_idx + k]
+                    if neighbor_idx != -1:
+                        nx, ny = divmod(neighbor_idx, width)
+                        if grid[nx, ny] == susceptible_val:
+                            potential_boundary[i, j] = True
+                            break
+
+    # Step 2: Flood Fill from Grid Edges
+    mask = np.zeros_like(grid, dtype=bool)
+    edge_indices = np.hstack((np.arange(0, width), np.arange(grid.size - width, grid.size)))
+    for edge_idx in edge_indices:
+        i, j = divmod(edge_idx, width)
+        if grid[i, j] == susceptible_val and not mask[i, j]:
+            flood_fill(grid, mask, i, j, susceptible_val, True)
+
+    # Step 3: Identify Internal Potential Boundary Nodes
+    internal_potential_boundary = np.zeros_like(grid, dtype=bool)
+    for i in range(height):
+        for j in range(width):
+            if potential_boundary[i, j]:
+                base_idx = (i * width + j) * 4
+                for k in range(4):
+                    neighbor_idx = neighbors_map[base_idx + k]
+                    if neighbor_idx != -1:
+                        nx, ny = divmod(neighbor_idx, width)  # Convert flat index to 2D indices
+                        if mask[nx, ny]:
+                            internal_potential_boundary[i, j] = True
+                            break
+
+    # Step 4: Isolate Actual Boundary Nodes
+    actual_boundary = potential_boundary & internal_potential_boundary
+
+    return actual_boundary
+
+def find_centroid_mean(external_boundary_grid):
+    boundary_indices = np.argwhere(external_boundary_grid)
+    
+    # Calculate the centroid (mean position) of the boundary points.
+    centroid_x, centroid_y = np.mean(boundary_indices, axis=0)
+    
+    # The centroid coordinates are given as (centroid_x, centroid_y).
+    # If you need to round them to the nearest integer (since grid indices are integers), you can do:
+    centroid_x = int(round(centroid_x))
+    centroid_y = int(round(centroid_y))
+    
+    centroid = (centroid_x, centroid_y)
+    return centroid
+    
+centroid = find_centroid_mean(find_external_boundary_grid(grid))
+print(centroid)
+\end{lstlisting}
+
+\section{Distance Analysis}
+
+\begin{lstlisting}[caption=Distance Analysis Algorithm, label=lst:distance-analysis]
+import numpy as np
+from numba import jit
+from collections import deque
+
+@jit(nopython=True)
+def max_euc_distance_to_boundary(x0, y0, boundary_indices):
+    """Calculate the maximum Euclidean distance from (x0, y0) to any boundary point."""
+    max_distance = 0.0
+    for index in range(boundary_indices.shape[0]):
+        x, y = boundary_indices[index]
+        euc_distance = np.sqrt((x - x0) ** 2 + (y - y0) ** 2)
+        if euc_distance > max_distance:
+            max_distance = euc_distance
+    return max_distance
+
+def find_infection_source_euc_distance(grid):
+    """Find the source of infection by minimizing the maximum distance to the external boundary."""
+    height, width = grid.shape
+    start_pos = (height // 2, width // 2)
+
+    # Convert the external boundary to a NumPy array of indices for efficient processing
+    external_boundary_grid = find_external_boundary_grid(grid)
+    external_boundary_indices = np.argwhere(external_boundary_grid)
+    
+    # Initialize queue and visited set
+    queue = deque([start_pos])
+    visited = set([start_pos])
+    current_best_node = start_pos
+    current_min_max_distance = max_euc_distance_to_boundary(start_pos[0], start_pos[1], external_boundary_indices)
+
+    while queue:
+        x0, y0 = queue.popleft()
+
+        # Check all neighbors to find the one with the smallest maximum distance to the boundary
+        min_neighbor_distance = float('inf')
+        next_node = None
+
+        base_index = (x0 * width + y0) * 4
+        for i in range(4):
+            neighbor_idx = neighbors_map[base_index + i]
+            if neighbor_idx == -1:
+                continue
+
+            nx0, ny0 = divmod(neighbor_idx, width)
+            if (nx0, ny0) not in visited:
+                visited.add((nx0, ny0))
+                n_max_distance = max_euc_distance_to_boundary(nx0, ny0, external_boundary_indices)
+                if n_max_distance < min_neighbor_distance:
+                    min_neighbor_distance = n_max_distance
+                    next_node = (nx0, ny0)
+                    
+        if next_node and min_neighbor_distance < current_min_max_distance:
+            # Only proceed if the next node improves the maximum distance
+            queue.append(next_node)
+            current_min_max_distance = min_neighbor_distance
+            current_best_node = next_node
+
+    return current_best_node
+\end{lstlisting}
+
+\section{Gillespie Algorithm}
+
+\begin{lstlisting}[caption=Gillespie Algorithm for SIRS Model, label=lst:gillespie-algorithm]
+import numpy as np
+
+def gillespie_sirs(S0, I0, R0, beta, gamma, delta, T):
+    S, I, R = [S0], [I0], [R0]
+    t = 0
+
+    while t < T:
+        N = S[-1] + I[-1] + R[-1]
+        rates = [
+            beta * S[-1] * I[-1] / N,  # Infection rate
+            gamma * I[-1],             # Recovery rate
+            delta * R[-1]              # Loss of immunity rate
+        ]
+        rate_sum = sum(rates)
+
+        if rate_sum == 0:
+            break
+
+        tau = np.random.exponential(1 / rate_sum)
+        t += tau
+        rand = np.random.random() * rate_sum
+
+        if rand < rates[0]:
+            S.append(S[-1] - 1)
+            I.append(I[-1] + 1)
+            R.append(R[-1])
+        elif rand < rates[0] + rates[1]:
+            S.append(S[-1])
+            I.append(I[-1] - 1)
+            R.append(R[-1] + 1)
+        else:
+            S.append(S[-1] + 1)
+            I.append(I[-1])
+            R.append(R[-1] - 1)
+
+    return np.array(S), np.array(I), np.array(R)
+\end{lstlisting}
