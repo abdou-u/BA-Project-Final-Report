@@ -6,8 +6,8 @@ This repository contains the LaTeX source code for my Bachelor's thesis, which f
 The LaTeX template used for this report is based on a template originally created by [firesofmay](https://github.com/firesofmay), available at:
 https://github.com/firesofmay/BE-Project-Final-Report-Latex-Template.git
 
-*You can find the final pdf version of the report in BA_Final_Project_Report.pdf available at:
-https://github.com/abdou-u/BA-Project-Final-Report/blob/master/BA_Final_Project_Report.pdf*
+*You can find the final pdf version of the report in [BA_Final_Project_Report.pdf](https://github.com/abdou-u/BA-Project-Final-Report/blob/master/BA_Final_Project_Report.pdf
+)*
 
 ## Objective
 The main objective of this thesis is to explore and develop computational models that can accurately identify the source of the infection.
