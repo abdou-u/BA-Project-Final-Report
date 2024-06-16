@@ -28,6 +28,6 @@ pdflatex main.tex
 bibtex main.aux
 pdflatex main.tex
 pdflatex main.tex
-```end bash
 
+### PDF
 *You can find the final pdf version of the report in BA_Final_Project_Report.pdf*
