@@ -1,7 +1,7 @@
 # Simulation of Infectious Processes on Networks
 
 ## Overview
-This repository contains the LaTeX source code for my Bachelor's thesis, which focuses on the simulation of SIRS infectious processes on networks, graphs and grids, along with determining the source of the infection. The project aims to provide insights into how infections spread through networks and grids and how source detection techniques can be optimized.
+This repository contains the LaTeX source code for my Bachelor's thesis report, which focuses on the simulation of SIRS infectious processes on networks, graphs and grids, along with determining the source of the infection. The project aims to provide insights into how infections spread through networks and grids and how source detection techniques can be optimized.
 
 The LaTeX template used for this report is based on a template originally created by [firesofmay](https://github.com/firesofmay), available at:
 https://github.com/firesofmay/BE-Project-Final-Report-Latex-Template.git
